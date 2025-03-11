@@ -40,7 +40,7 @@
 
 namespace proc {
   using namespace std::literals;
-  namespace bp = boost::process;
+  namespace bp = boost::process::v1;
   namespace pt = boost::property_tree;
 
   proc_t proc;

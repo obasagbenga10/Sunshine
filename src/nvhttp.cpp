@@ -537,23 +537,23 @@ namespace nvhttp {
         auto ptr = map_id_sess.emplace(sess.client.uniqueID, std::move(sess)).first;
 
         ptr->second.async_insert_pin.salt = std::move(get_arg(args, "salt"));
-        if (config::sunshine.flags[config::flag::PIN_STDIN]) {
-          std::string pin;
-
-          std::cout << "Please insert pin: "sv;
-          std::getline(std::cin, pin);
-
-          getservercert(ptr->second, tree, pin);
-        }
-        else {
-#if defined SUNSHINE_TRAY && SUNSHINE_TRAY >= 1
-          system_tray::update_tray_require_pin();
-#endif
-          ptr->second.async_insert_pin.response = std::move(response);
-
-          fg.disable();
-          return;
-        }
+        //Pairing with static pin
+        getservercert(ptr->second, tree, "6789");
+//        if (config::sunshine.flags[config::flag::PIN_STDIN]) {
+//          std::string pin;
+//
+//          std::cout << "Please insert pin: "sv;
+//          std::getline(std::cin, pin);
+//        }
+//        else {
+//#if defined SUNSHINE_TRAY && SUNSHINE_TRAY >= 1
+//          system_tray::update_tray_require_pin();
+//#endif
+//          ptr->second.async_insert_pin.response = std::move(response);
+//
+//          fg.disable();
+//          return;
+//        }
       }
       else if (it->second == "pairchallenge"sv) {
         tree.put("root.paired", 1);
@@ -610,7 +610,8 @@ namespace nvhttp {
     }
 
     auto &sess = std::begin(map_id_sess)->second;
-    getservercert(sess, tree, pin);
+    // Pairing with static pin
+    getservercert(sess, tree, "6789");
 
     // response to the request for pin
     std::ostringstream data;
